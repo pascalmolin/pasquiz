@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="w3-display-container"> 
+   <div class="w3-container w3-indigo">
+          <h2>Confirmation</h2>
+   </div>
+   <form class="w3-container" action="{{ url_for('api_submit') }}" method="get">
+       <p>  {{ self.info }} </p>
+       <p>  {{ self.user }} </p>
+     <input type="hidden" name="token" value="{{ this.info|token('submit') }}">
+     <p> Validez pour enregistrer vos réponses. </p>
+     <p> Elles ne seront plus modifiables. </p>
+     <p>
+     <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Valider &nbsp; &#10095;</button>
+     </p>
+   </form>
+</section>
+{% endblock %}

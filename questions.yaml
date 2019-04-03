@@ -1,0 +1,49 @@
+---
+text: Quel est le groupe de symétries du tétraèdre ?
+choices:
+- { text: "le groupe symétrique $S_4$", correct: True }
+- { text: "le groupe symétrique $S_3$" }
+- { text: "le produit semi-direct $\\Z/3\\Z\\rtimes\\Z/2\\Z$" }
+- { text: "le groupe dihédral $D_4$" }
+tag: [l3,algebre]
+---
+text: Quel est le cardinal de $\F_{27}^\times$ ?
+choices:
+- { text: 26, correct: True }
+- { text: 12 }
+- { text: 12 }
+tag: [l3,algebre]
+---
+text: Si $a$ est d'ordre $n$, quel est l'ordre de $a^k$ ?
+choices:
+- { text: "$\\frac{n}{\\pgcd(n,k)}$", correct: True }
+- { text: "$\\pgcd(n,k)$" }
+- { text: "$\\ppcm(n,k)$" }
+- { text: "$\\frac{n}{k}$" }
+- { text: "$\\frac{k}{n}$" }
+tag: [l3,algebre]
+#---
+#text: >
+#    Qu'exprime l'assertion suivante ?
+#    $$\forall a>0\exists b>0,\forall c\in\R,\abs{g(c)-b} < a $$
+#choices:
+#- { text: "la continuité de $g$ sur $[-1,1]$" }
+#- { text: "la continuité uniforme de $g$ sur" }
+---
+text: >
+    Qu'exprime l'assertion suivante ?
+    $$ \forall x\in\R, \exists y\in\R, f(y) <  f(x)$$
+choices:
+- { text: "$f$ n'est pas bornée inférieurement sur $\\R$", correct: True }
+- { text: "$f$ atteint son maximum en $x$" }
+- { text: "$f$ est continue inférieurement sur $\\R$" }
+tag: [l2,analyse]
+---
+text: >
+    Qu'exprime l'assertion suivante
+    $$ \exists x\in\R, \forall y\in\R, f(y) \leq  f(x)$$
+choices:
+- { text: "$f$ possède un maximum", correct: True }
+- { text: "$f$ n'est pas bornée inférieurement sur $\\R$" }
+- { text: "$f$ est continue inférieurement sur $\\R$" }
+tag: [l2,analyse]

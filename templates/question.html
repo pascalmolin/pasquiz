@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="w3-display-container"> 
+    <div class="w3-container w3-indigo">
+    <h2>Question {{ this.number + 1 }}</h2>
+    </div>
+    <form class="w3-container w3-card-4" action="{{ url_for('api_answer') }}" method="get">
+   <input type="hidden" name="token" value="{{ this.info|token('answer') }}">
+        <p>
+        {{ this.text }}
+        </p>
+   <ul class="w3-ul w3-border">
+   {% for c in this %}
+   <li>
+       <input {#class="w3-radio"#}
+              type="radio" name="choice"
+              value="{{ loop.index0 }}"
+              {% if loop.index0 == this.selected %} selected {% endif %}
+              required>
+    <label>{{ c.text }}</label>
+   </li>
+   {% endfor %}
+   </ul>
+   <p>
+   <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Suivant &nbsp; &#10095;</button>
+   </p>
+   </form>
+</section>
+{% endblock %}
+
+{% block extralinks %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js" integrity="sha384-2BKqo+exmr9su6dir+qCw08N2ZKRucY4PrGQPPWU1A7FtlCGjmEGFqXCv5nyM5Ij" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/auto-render.min.js"
+              integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI"
+              crossorigin="anonymous"
+              onload='renderMathInElement(document.body,{
+              delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right: "$", display: false},
+              ],
+              macros: {
+                "\\pgcd": "\\operatorname{pgcd}",
+                "\\ppcm": "\\operatorname{ppcm}",
+              },
+              });'></script>
+{% endblock %}
+{% block style %}
+<style>
+input.faCheck {
+    visibility: hidden;
+}
+input.faCheck:checked:after, input.faCheck:after {
+    visibility: visible;
+    font-family: FontAwesome;
+    font-size:25px;height: 17px; width: 17px;
+    position: relative;
+    top: -3px;
+    left: 0px;
+    background-color:#FFF;
+    display: inline-block;
+}
+
+input.faCheck:checked:after {
+      content: '\f058';
+}
+
+input.faCheck:after {
+      content: '\f10c';
+}
+</style>
+{% endblock style %}
+
+

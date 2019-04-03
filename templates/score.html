@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="w3-display-container"> 
+   <div class="w3-container w3-indigo">
+          <h2>Résultats</h2>
+   </div>
+   <div class="w3-container">
+       {% set s = 's' if this.answers.score > 1 else '' %}
+       Vous avez {{ this.answers.score }} réponse{{s}} correcte{{s}} sur les
+       {{ this.answers|length }} questions.
+   </div>
+</section>
+{% endblock %}

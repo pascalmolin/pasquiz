@@ -407,8 +407,5 @@ def build(yaml):
     pass
 
 if __name__ == '__main__':
-    quizz.load_questions_yaml('questions.yaml')
-    uid = quizz.new_user('Pascal',1)
-    qid = quizz.new_quizz(1)
-    aid = quizz.new_assignment(uid, qid)
+    quizz.load_questions_yaml('example.yaml')
     cli()

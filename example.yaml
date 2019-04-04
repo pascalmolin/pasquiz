@@ -6,7 +6,7 @@ choices:
 - { text: "F" }
 - { text: "D" }
 - { text: "U" }
-tag: [read]
+tag: [begin]
 ---
 text: This question is
 choices:
@@ -33,17 +33,27 @@ choices:
 - { text: "12" }
 tag: [cp]
 ---
-text: Is $7$ a random number ?
+text: Is $7$ a random number?
 choices:
-- { text: "Yes", correct: True }
-- { text: "No" }
+- { text: "No", correct: True }
+- { text: "No because it is prime" }
+- { text: "It depends on the value of 7." }
 - { text: "No, 9 is more random." }
-- { text: "Yes, it's the oddest No, 9 is more random." }
+- { text: "Yes when you use two dice." }
 tag: [stupid]
 ---
-text: What is number $2$ ?
+text: What is number $2$?
 choices:
 - { text: "The oddest prime", correct: True }
 - { text: "The perimeter of the unit vector" }
 - { text: "Raphaël Nadal" }
 tag: [stupid]
+---
+text: What is the sum of all positive integers?
+choices:
+- { text: "$-\\frac1{12}$", correct: True }
+- { text: "$\\infty$" }
+- { text: "a google" }
+- { text: "the weight of black matter" }
+- { text: "0" }
+tag: [math]

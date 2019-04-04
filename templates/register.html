@@ -6,7 +6,7 @@
    </div>
    <form class="w3-container" action="{{ url_for('api_register') }}" method="get">
      <input type="hidden" name="token" value="{{ auth|token('api_register') }}">
-     <p>Bienvenue au test de niveau.
+     <p>Bienvenue.
      Veuillez entrer votre nom ci-dessous avant de commencer.
      </p>
      <p><input class="w3-input" type="text" name="name" required>

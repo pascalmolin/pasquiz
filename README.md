@@ -1,24 +1,54 @@
 # QCM app
 
 
-## structured data
+Simple Quizz application, one single python file.
 
-input as yaml
+## v0.1: proof of concept
 
+## usage
+
+```
+python app.py
+```
+
+launches a webserver on ``localhost:5000``.
+
+Then go to /token to obtain a valid token
+
+Go to /token to get a valid token and 
+
+The toplevel page
+
+## how it works
+
+- 
+
+- a stupid database with python lists and dicts
+
+just a flask app
+
+## questions files
+
+one yaml file, structured as follows
+
+```
 ---
-id: exercise id
-title: exercice title
-question: required
-hints: optional
-answers:
--
-  text: required
-  correct: true/false
-  clue: optional
--
-  text: required
+text: This question is
+choices:
+- { text: "easy", correct: True }
+- { text: "impossible" }
+- { text: "red" }
+tag: [stupid]
+```
 
-## sql data
+(may add fields id, title, image, hints... they are ignored)
+
+## app
+
+## todo
+
+
+### sql database
 
 - questions
 
@@ -29,8 +59,6 @@ answers:
   | qid | title | text | choices | correct |
   |-----|-------|------|---------|---------|
   | int | text  | text | int     | int     |
-
-
 
 - users: uid, name, date
 

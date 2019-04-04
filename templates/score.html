@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros.html" import qrcode_link %}
 {% block content %}
 <section class="w3-display-container"> 
    <div class="w3-container w3-indigo">
@@ -8,6 +9,10 @@
        {% set s = 's' if this.answers.score > 1 else '' %}
        Vous avez {{ this.answers.score }} réponse{{s}} correcte{{s}} sur les
        {{ this.answers|length }} questions.
+   </div>
+   <div class="w3-container">
+       <p> Lien permanent vers votre score. </p>
+       {{ qrcode_link(this.results,'api_view') }}
    </div>
 </section>
 {% endblock %}

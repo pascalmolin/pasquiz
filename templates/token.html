@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "macros.html" import qrcode_link %}
+{% block content %}
+<section class="w3-display-container"> 
+   <div class="w3-container w3-indigo">
+      <h2>Registration link</h2>
+   </div>
+   <div class="w3-container">
+       <p>
+       Le lien suivant vous permet de participer à un test de niveau.
+       Si vous n'effectuez pas le test tout de suite, sauvegardez
+       ce lien dans votre navigateur, il ne vous en sera pas donné d'autre.
+       </p>
+       {{ qrcode_link(auth,'api_activate') }}
+   </div>
+</section>
+{% endblock %}

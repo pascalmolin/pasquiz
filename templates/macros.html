@@ -1,0 +1,12 @@
+{% macro qrcode_link(info,route) %}
+{% set link_token = info|token(route) %}
+{% set link = url_for(route, token = link_token, _external=True) %}
+<p><a href="{{ link }}"><tt> {{ link }} </tt></a></p>
+<div class="w3-cell-row">
+    <div class="w3-cell-middle">
+        <img class="w3-padding"
+             src="{{ url_for('api_svg',token=link|token('api_svg')) }}"
+             width="300" height="300">
+    </div>
+</div>
+{% endmacro %}

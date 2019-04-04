@@ -47,3 +47,25 @@ choices:
 - { text: "$f$ n'est pas bornée inférieurement sur $\\R$" }
 - { text: "$f$ est continue inférieurement sur $\\R$" }
 tag: [l2,analyse]
+---
+text: >
+    Le nombre de millions d'habitants en région parisienne est donné
+    par la formule $n=0.07k+11$, où $k$ est le nombre d'années
+    depuis 2000. Que représente le nombre $0.07$ ?
+choices:
+- { text: "l'accroissement de population annuel, en millions", correct: True }
+- { text: "le taux de fécondité depuis 2000" }
+- { text: "le nombre moyen d'habitants en 2001" }
+- { text: "un accroissement annuel de 7%" }
+tag: [bac,analyse]
+---
+text: >
+    Quel est le nombre de chiffres décimaux de $2^{64}$ ?
+choices:
+- { text: "1+\\floor{64\\log(2)/\\log(10)}", correct: True }
+- { text: "\\ceil{64\\log(2)/\\log(10)}", correct: True }
+- { text: "le taux de fécondité depuis 2000" }
+- { text: "le nombre moyen d'habitants en 2001" }
+
+
+

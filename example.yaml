@@ -1,0 +1,49 @@
+---
+text: Try to answer H.
+choices:
+- { text: "H", correct: True }
+- { text: "A" }
+- { text: "F" }
+- { text: "D" }
+- { text: "U" }
+tag: [read]
+---
+text: This question is
+choices:
+- { text: "easy", correct: True }
+- { text: "impossible" }
+- { text: "red" }
+- { text: "magic" }
+- { text: "super hard" }
+tag: [stupid]
+---
+text: $A+B+A$
+choices:
+- { text: "A+B+A", correct: True }
+- { text: "AAB" }
+- { text: "D" }
+- { text: "2A+B" }
+tag: [stupid]
+---
+text: $5-3+2+5+3-2=?$
+choices:
+- { text: "10", correct: True }
+- { text: "8" }
+- { text: "0" }
+- { text: "12" }
+tag: [cp]
+---
+text: Is $7$ a random number ?
+choices:
+- { text: "Yes", correct: True }
+- { text: "No" }
+- { text: "No, 9 is more random." }
+- { text: "Yes, it's the oddest No, 9 is more random." }
+tag: [stupid]
+---
+text: What is number $2$ ?
+choices:
+- { text: "The oddest prime", correct: True }
+- { text: "The perimeter of the unit vector" }
+- { text: "Raphaël Nadal" }
+tag: [stupid]

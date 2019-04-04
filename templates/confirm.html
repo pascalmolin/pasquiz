@@ -7,7 +7,7 @@
    <form class="w3-container" action="{{ url_for('api_submit') }}" method="get">
        <p>  {{ self.info }} </p>
        <p>  {{ self.user }} </p>
-     <input type="hidden" name="token" value="{{ this.info|token('submit') }}">
+     <input type="hidden" name="token" value="{{ this.info|token('api_submit') }}">
      <p> Validez pour enregistrer vos réponses. </p>
      <p> Elles ne seront plus modifiables. </p>
      <p>

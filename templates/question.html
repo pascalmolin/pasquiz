@@ -2,29 +2,31 @@
 {% block content %}
 <section class="w3-display-container"> 
     <div class="w3-container w3-indigo">
-    <h2>Question {{ this.number + 1 }}</h2>
+        <h2>Question {{ this.number + 1 }}</h2>
     </div>
     <form class="w3-container w3-card-4" action="{{ url_for('api_answer') }}" method="get">
-   <input type="hidden" name="token" value="{{ this.info|token('answer') }}">
+        <input type="hidden" name="token" value="{{ this.info|token('api_answer') }}">
         <p>
-        {{ this.text }}
+        {{ this.question.text }}
         </p>
-   <ul class="w3-ul w3-border">
-   {% for c in this %}
-   <li>
-       <input {#class="w3-radio"#}
-              type="radio" name="choice"
-              value="{{ loop.index0 }}"
-              {% if loop.index0 == this.selected %} selected {% endif %}
-              required>
-    <label>{{ c.text }}</label>
-   </li>
-   {% endfor %}
-   </ul>
-   <p>
-   <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Suivant &nbsp; &#10095;</button>
-   </p>
-   </form>
+        {{ this.disabled }}
+        <ul class="w3-ul w3-border">
+            {% for choice in this.choices %}
+            <li>
+                <input {#class="w3-radio"#}
+            type="radio" name="choice"
+                         value="{{ loop.index0 }}"
+                         {% if loop.index0 == this.selected %} checked {% endif %}
+                         {% if this.disabled %} disabled {% endif %}
+                         required>
+                <label>{{ choice.text }}</label>
+            </li>
+            {% endfor %}
+        </ul>
+        <p>
+        <button type="submit" {% if this.disabled %} disabled {% endif %} class="w3-btn w3-padding w3-indigo" style="width:120px">Suivant &nbsp; &#10095;</button>
+        </p>
+    </form>
 </section>
 {% endblock %}
 
@@ -42,6 +44,7 @@
               macros: {
                 "\\pgcd": "\\operatorname{pgcd}",
                 "\\ppcm": "\\operatorname{ppcm}",
+                "\\F": "\\mathbb{F}",
               },
               });'></script>
 {% endblock %}

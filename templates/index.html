@@ -13,7 +13,7 @@
        <p>
        Sur cette version de test, vous pouvez aussi vous 
        obtenir un lien sur
-       <a href="{{ url_for('api_token',token=1|token('api_token'))  }}">cette page</a>.
+       <a href="{{ 'api_token'|url_protected(1) }}">cette page</a>.
        </p>
    </div>
 </section>

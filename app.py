@@ -238,6 +238,11 @@ def tokenize(data, salt='quizz',expiration=600):
         print "tokenize %s"%(data,)
     return s.dumps(data)
 
+@app.template_filter('url_protected')
+def url_protected(route,data,**kwargs):
+    token = tokenize(data,salt=route)
+    return url_for(route,token=token,**kwargs)
+
 def load_token(token, salt=''):
     s = get_serializer(salt)
     try:
@@ -265,7 +270,9 @@ def token_required(f):
     """
     @wraps(f)
     def decorated(*args,**kwargs):
-        token = request.args.get('token')
+        token = request.args.get('token',None)
+        if token is None:
+            return render_template("illegal.html"), 401
         if app.config['verbose']:
             print "[page %s, read access token]"%f.__name__
         data = load_token(token, salt = f.__name__)
@@ -293,8 +300,7 @@ def render_page(data,route=None):
     elif route:
         if app.config['verbose']:
             print "[CREATE TOKEN] for page %s using data %s"%(route,data.info)
-        token = tokenize(data.info,salt=route)
-        return redirect(url_for(route, token=token))
+        return redirect(url_protected(route, data.info))
     else:
         if app.config['verbose']:
             print "[BUG] no route to render %s"%(data,)
@@ -305,6 +311,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/token', methods = [METHOD])
+@token_required
 def api_token(data=None):
     """ generates valid tokens
 

@@ -8,14 +8,14 @@ Simple Quizz application, one single python file.
 ### usage
 
 ```
-python --allow-register app.py
+$ python app.py server --allow-register
 ```
 
 launches a webserver on ``localhost:5000``,
 with a valid link to generate token.
 
 ```
-python app.py server --help
+$ python app.py server --help
 
 Usage: app.py server [OPTIONS]
 
@@ -28,6 +28,15 @@ Options:
 --secret_key TEXT              secret key
 --token_method [none|default]  token method
 --help                         Show this message and exit.
+```
+
+### requirements
+
+```
+flask
+itsdangerous
+pyqrcode
+click
 ```
 
 ### how it works
@@ -65,49 +74,8 @@ tag: [stupid]
 
 (may add fields id, title, image, hints... they are ignored)
 
-### app
-
-
-
 ## todo
 
-
-### sql database
-
-- questions
-
-- choices
-
-- quizz
-
-  | qid | title | text | choices | correct |
-  |-----|-------|------|---------|---------|
-  | int | text  | text | int     | int     |
-
-- users: uid, name, date
-
-  | uid | number | date |
-  |-----|--------|------|
-  | int | int    | int  |
-
-- answers
-
-  | uid | number | cid |
-  |-----|--------|-----|
-  | int | int    | int |
-
-- choices table
-
-  | qid | cid | text | comment |
-  |-----|-----|------|---------|
-  | int | int | text | text    |
-
-## Quizz pages
-
-generated 
-
-## server
-
-
-
+- images,...
+- sql database
 

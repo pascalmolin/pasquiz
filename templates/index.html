@@ -10,11 +10,12 @@
        que vous avez reçu.
        </p>
 
+       {% if token_link %}
        <p>
-       Sur cette version de test, vous pouvez aussi vous 
-       obtenir un lien sur
+       Vous pouvez aussi obtenir un lien sur
        <a href="{{ 'api_token'|url_protected(1) }}">cette page</a>.
        </p>
+       {% endif %}
    </div>
 </section>
 {% endblock content %}

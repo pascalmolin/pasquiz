@@ -308,7 +308,7 @@ def render_page(data,route=None):
  
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',token_link=app.config['allow_register'])
 
 @app.route('/token', methods = [METHOD])
 @token_required
@@ -404,15 +404,23 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--debug', default=False, help='turn on Flask debug mode')
-@click.option('--verbose', default=False, help='log requests')
+@click.option('--debug', default=False, is_flag=True, help='turn on Flask debug mode')
+@click.option('--verbose', default=False, is_flag=True, help='log requests')
+@click.option('--allow-register', default=False, is_flag=True, help='provide registration link at index page')
 @click.option('--number_questions', default=5, help='number of questions per quizz')
 @click.option('--number_choices', default=3, help='number of choices per question')
 @click.option('--secret_key', default='lilalilalou', help='secret key')
-@click.option('--token_method', default='default', help='token method')
-def server(debug,verbose,number_questions,number_choices,secret_key,token_method):
+@click.option('--token_method', type=click.Choice(['none', 'default']), default='default', help='token method')
+def server(debug,
+        verbose,
+        allow_register,
+        number_questions,
+        number_choices,
+        secret_key,
+        token_method):
     app.config['verbose'] = verbose
     app.config['SECRET_KEY'] = secret_key
+    app.config['allow_register'] = allow_register
     app.config['number_questions'] = number_questions
     app.config['number_choices'] = number_choices
     app.config['token_method'] = token_method

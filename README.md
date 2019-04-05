@@ -5,29 +5,51 @@ Simple Quizz application, one single python file.
 
 ## v0.1: proof of concept
 
-## usage
+### usage
 
 ```
-python app.py
+python --allow-register app.py
 ```
 
-launches a webserver on ``localhost:5000``.
+launches a webserver on ``localhost:5000``,
+with a valid link to generate token.
 
-Then go to /token to obtain a valid token
+```
+python app.py server --help
 
-Go to /token to get a valid token and 
+Usage: app.py server [OPTIONS]
 
-The toplevel page
+Options:
+--debug                        turn on Flask debug mode
+--verbose                      log requests
+--allow-register               provide registration link at index page
+--number_questions INTEGER     number of questions per quizz
+--number_choices INTEGER       number of choices per question
+--secret_key TEXT              secret key
+--token_method [none|default]  token method
+--help                         Show this message and exit.
+```
 
-## how it works
+### how it works
 
-- 
+- for each _user_ an _assignment_ is generated
+  from a list of possible _questions_.
+  The anwsers are stored.
 
-- a stupid database with python lists and dicts
+- all this is currently handled with a stupid database
+  made of python lists and classes
 
-just a flask app
+- each action (see question, answer it, validate...)
+  must be allowed by a valid token, which contains a
+  signed version of
+  - quizz id
+  - user id
+  - question id
+  - expiration time
 
-## questions files
+- a minimal flask setup makes this possible
+
+### questions files
 
 one yaml file, structured as follows
 
@@ -43,7 +65,9 @@ tag: [stupid]
 
 (may add fields id, title, image, hints... they are ignored)
 
-## app
+### app
+
+
 
 ## todo
 
@@ -81,17 +105,6 @@ tag: [stupid]
 ## Quizz pages
 
 generated 
-
-each page contains a token field, which contains an encrypted version of
-- quizz id
-- user id
-- question id
-- expiration time
-
-on reply, the corresponding answer entry is recorded.
-
-the page also contains a secure (and permanent) link to access 
-the score.
 
 ## server
 

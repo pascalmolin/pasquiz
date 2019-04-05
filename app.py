@@ -9,9 +9,15 @@
 import time
 import random
 import sys
+
 if sys.version_info.major == 3:
     unicode = str
     xrange = range
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import BytesIO as StringIO
 
 VERSION='0.1'
 
@@ -91,7 +97,7 @@ class QuizzApp(dict):
 
     def get(self, db, index):
         assert db in self and isinstance(self[db], list)
-        assert index < len(self[db]), """ illegal index %i in table %s """ % (index, db) 
+        assert index < len(self[db]), """ illegal index %i in table %s """ % (index, db)
         return self[db][index]
 
     def add(self, db, entry):
@@ -178,7 +184,7 @@ class QuizzApp(dict):
         score = 0
         for choice, (qid, cid) in zip(answers,quizz):
             if app.config['verbose']:
-                print("choice %i in question %s"%(choice,(qid,cid)))
+                app.logger.info("choice %i in question %s"%(choice,(qid,cid)))
             question = self.get('question',qid)
             score += question.grade(cid[choice])
         answers.set_score(score)
@@ -208,11 +214,11 @@ class QuizzApp(dict):
             try:
                 for q in yaml.load_all(stream,Loader=yaml.SafeLoader):
                     self.add('question',Question(**q))
-            except yaml.YAMLError as exc:
-                print(exc)
+            except yaml.YAMLError as e:
+                app.logger.info(e)
 
 #####################################################################
-# 
+#
 # Web server
 #
 #####################################################################
@@ -231,7 +237,7 @@ def get_serializer(salt=''):
         return URLSafeTimedSerializer(app.config['SECRET_KEY'],salt=salt)
     else:
         return URLSafeTimedSerializer(app.config['SECRET_KEY'],salt=salt)
- 
+
 @app.template_filter('token')
 def tokenize(data, salt='quizz',expiration=600):
     """
@@ -239,7 +245,7 @@ def tokenize(data, salt='quizz',expiration=600):
     """
     s = get_serializer(salt)
     if app.config['verbose']:
-        print("tokenize %s"%(data,))
+        app.logger.info("tokenize %s"%(data,))
     return s.dumps(data)
 
 @app.template_filter('url_protected')
@@ -251,19 +257,19 @@ def load_token(token, salt=''):
     s = get_serializer(salt)
     try:
         if app.config['verbose']:
-            print("parse token %s"%(token,))
+            app.logger.info("parse token %s"%(token,))
         data = s.loads(token)
     except SignatureExpired:
         # FIXME: return expiration page
         if app.config['verbose']:
-            print("signature expired")
+            app.logger.info("signature expired")
         return None # valid token, but expired
     except BadSignature:
         if app.config['verbose']:
-            print("bad signature")
+            app.logger.info("bad signature")
         return None # invalid token
     if app.config['verbose']:
-        print("got %s"%(data,))
+        app.logger.info("got %s"%(data,))
     return data
 
 from functools import wraps
@@ -278,38 +284,37 @@ def token_required(f):
         if token is None:
             return render_template("illegal.html"), 401
         if app.config['verbose']:
-            print("[page %s, read access token]"%f.__name__)
+            app.logger.info("[page %s, read access token]"%f.__name__)
         data = load_token(token, salt = f.__name__)
         if data is None:
-            if app.config['verbose']:
-                print("[INVALID] got invalid token %s"%(token,))
+            app.logger.info('[INVALID TOKEN] %s'%(token,))
             return render_template("illegal.html"), 401
         try:
             return f(*args,data=data,**kwargs)
         except AssertionError:
-            print("[INVALID] not in the database")
+            app.logger.info("[INVALID] not in the database")
             return render_template("illegal.html"), 401
         except TypeError:
-            print("[TYPE ERROR] wrong entry")
+            app.logger.info("[TYPE ERROR] wrong entry")
             return render_template("illegal.html"), 401
     return decorated
 
 def render_page(data,route=None):
     if data is None:
         if app.config['verbose']:
-            print("[ILLEGAL] empty page")
+            app.logger.info("[ILLEGAL] empty page")
         return render_template('illegal.html')
     if isinstance(data, PageData) and route is None:
         return render_template(data.template, this=data)
     elif route:
         if app.config['verbose']:
-            print("[CREATE TOKEN] for page %s using data %s"%(route,data.info))
+            app.logger.info("[CREATE TOKEN] for page %s using data %s"%(route,data.info))
         return redirect(url_protected(route, data.info))
     else:
         if app.config['verbose']:
-            print("[BUG] no route to render %s"%(data,))
+            app.logger.info("[BUG] no route to render %s"%(data,))
         return render_template('illegal.html')
- 
+
 @app.route('/')
 def index():
     return render_template('index.html',token_link=app.config['allow_register'])
@@ -344,7 +349,7 @@ def api_register(data=None):
                           app.config['number_choices'])
     aid = quizz.new_assignment(uid, qid)
     if app.config['verbose']:
-        print("created user %i,quizz %i,assignment %i"%(uid,qid,aid))
+        app.logger.info("created user %i,quizz %i,assignment %i"%(uid,qid,aid))
     return render_page(PageData((uid,aid,0)), 'api_question')
 
 @app.route('/question', methods = [METHOD])
@@ -379,14 +384,10 @@ def api_answer(data=None):
 @token_required
 def api_submit(data=None):
     """ token data (uid, aid) """
-    print('received token %s' % data)
+    app.logger.info('received token %s' % data)
     data = quizz.post_confirmation(data)
     return render_page(data, 'api_score')
 
-try:
-        from StringIO import StringIO
-except ImportError:
-        from io import StringIO
 import pyqrcode
 
 @app.route('/images/svg',methods = [METHOD])

@@ -11,6 +11,7 @@ import random
 import sys
 if sys.version_info.major == 3:
     unicode = str
+    xrange = range
 
 VERSION='0.1'
 

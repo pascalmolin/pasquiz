@@ -174,7 +174,7 @@ class QuizzApp(dict):
         score = 0
         for choice, (qid, cid) in zip(answers,quizz):
             if app.config['verbose']:
-                print "choice %i in question %s"%(choice,(qid,cid))
+                print("choice %i in question %s"%(choice,(qid,cid)))
             question = self.get('question',qid)
             score += question.grade(cid[choice])
         answers.set_score(score)
@@ -202,7 +202,7 @@ class QuizzApp(dict):
 
         with open(filename, 'r') as stream:
             try:
-                for q in yaml.load_all(stream):
+                for q in yaml.load_all(stream,Loader=yaml.SafeLoader):
                     self.add('question',Question(**q))
             except yaml.YAMLError as exc:
                 print(exc)
@@ -235,7 +235,7 @@ def tokenize(data, salt='quizz',expiration=600):
     """
     s = get_serializer(salt)
     if app.config['verbose']:
-        print "tokenize %s"%(data,)
+        print("tokenize %s"%(data,))
     return s.dumps(data)
 
 @app.template_filter('url_protected')
@@ -247,19 +247,19 @@ def load_token(token, salt=''):
     s = get_serializer(salt)
     try:
         if app.config['verbose']:
-            print "parse token %s"%(token,)
+            print("parse token %s"%(token,))
         data = s.loads(token)
     except SignatureExpired:
         # FIXME: return expiration page
         if app.config['verbose']:
-            print "signature expired"
+            print("signature expired")
         return None # valid token, but expired
     except BadSignature:
         if app.config['verbose']:
-            print "bad signature"
+            print("bad signature")
         return None # invalid token
     if app.config['verbose']:
-        print "got %s"%(data,)
+        print("got %s"%(data,))
     return data
 
 from functools import wraps
@@ -274,36 +274,36 @@ def token_required(f):
         if token is None:
             return render_template("illegal.html"), 401
         if app.config['verbose']:
-            print "[page %s, read access token]"%f.__name__
+            print("[page %s, read access token]"%f.__name__)
         data = load_token(token, salt = f.__name__)
         if data is None:
             if app.config['verbose']:
-                print "[INVALID] got invalid token %s"%(token,)
+                print("[INVALID] got invalid token %s"%(token,))
             return render_template("illegal.html"), 401
         try:
             return f(*args,data=data,**kwargs)
         except AssertionError:
-            print "[INVALID] not in the database"
+            print("[INVALID] not in the database")
             return render_template("illegal.html"), 401
         except TypeError:
-            print "[TYPE ERROR] wrong entry"
+            print("[TYPE ERROR] wrong entry")
             return render_template("illegal.html"), 401
     return decorated
 
 def render_page(data,route=None):
     if data is None:
         if app.config['verbose']:
-            print "[ILLEGAL] empty page"
+            print("[ILLEGAL] empty page")
         return render_template('illegal.html')
     if isinstance(data, PageData) and route is None:
         return render_template(data.template, this=data)
     elif route:
         if app.config['verbose']:
-            print "[CREATE TOKEN] for page %s using data %s"%(route,data.info)
+            print("[CREATE TOKEN] for page %s using data %s"%(route,data.info))
         return redirect(url_protected(route, data.info))
     else:
         if app.config['verbose']:
-            print "[BUG] no route to render %s"%(data,)
+            print("[BUG] no route to render %s"%(data,))
         return render_template('illegal.html')
  
 @app.route('/')
@@ -340,7 +340,7 @@ def api_register(data=None):
                           app.config['number_choices'])
     aid = quizz.new_assignment(uid, qid)
     if app.config['verbose']:
-        print "created user %i,quizz %i,assignment %i"%(uid,qid,aid)
+        print("created user %i,quizz %i,assignment %i"%(uid,qid,aid))
     return render_page(PageData((uid,aid,0)), 'api_question')
 
 @app.route('/question', methods = [METHOD])
@@ -375,11 +375,14 @@ def api_answer(data=None):
 @token_required
 def api_submit(data=None):
     """ token data (uid, aid) """
-    print 'received token %s' % data
+    print('received token %s' % data)
     data = quizz.post_confirmation(data)
     return render_page(data, 'api_score')
 
-from StringIO import StringIO
+try:
+        from StringIO import StringIO
+except ImportError:
+        from io import StringIO
 import pyqrcode
 
 @app.route('/images/svg',methods = [METHOD])

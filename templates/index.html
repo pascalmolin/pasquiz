@@ -16,10 +16,11 @@
     <p>
     {% if config.lang == 'fr' %}
      Vous pouvez aussi obtenir un lien sur
+     <a href="{{ 'api_token'|url_protected(1) }}">cette page</a>.
     {% else %}
      You can get one on
+     <a href="{{ 'api_token'|url_protected(1) }}">this page</a>.
     {% endif %}
-    <a href="{{ 'api_token'|url_protected(1) }}">cette page</a>.
     </p>
     {% endif %}
 </div>

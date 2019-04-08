@@ -1,11 +1,12 @@
 {% macro qrcode_link(info,route) %}
 {% set link = route|url_protected(info, _external=True) %}
-<p><a href="{{ link }}"><tt> {{ link }} </tt></a></p>
-<div class="w3-cell-row">
-    <div class="w3-cell-middle">
-        <img class="w3-padding"
-             src="{{ 'api_svg'|url_protected(link) }}"
-             width="300" height="300">
-    </div>
+     <div class="w3-block" style="font-family: monospace; word-break: break-word;">
+      <a href="{{ link }}">{{ link }}</a>
+     </div>
+<div class="w3-block">
+    <img src="{{ 'api_svg'|url_protected(link) }}"
+         style="display: block; margin: auto;"
+         width="300" height="300">
+</div>
 </div>
 {% endmacro %}

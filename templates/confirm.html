@@ -1,18 +1,23 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
-          <h2>Confirmation</h2>
-   </div>
-   <form class="w3-container" action="{{ url_for('api_submit') }}" method="get">
-       <p>  {{ self.info }} </p>
-       <p>  {{ self.user }} </p>
-     <input type="hidden" name="token" value="{{ this.info|token('api_submit') }}">
-     <p> Validez pour enregistrer vos réponses. </p>
-     <p> Elles ne seront plus modifiables. </p>
-     <p>
-     <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Valider &nbsp; &#10095;</button>
-     </p>
-   </form>
-</section>
+{% extends "card.html" %}
+{% block top %}
+    <h2>Confirmation</h2>
+{% endblock %}
+{% block middle %}
+<form class="w3-container" action="{{ url_for('api_submit') }}" method="get">
+    <p>  {{ self.info }} </p>
+    <p>  {{ self.user }} </p>
+    <input type="hidden" name="token" value="{{ this.info|token('api_submit') }}">
+    {% if config.lang == 'fr' %}
+    <p> Validez pour enregistrer vos réponses. </p>
+    <p> Vous ne pourrez plus les modifier. </p>
+    {% else %}
+    <p> Press next to submit your answers. </p>
+    <p> You will not be able to change them afterwards. </p>
+    {% endif %}
+    <div class="w3-bar">
+        {% set u,a,n = this.info[0],this.info[1],this.answers|length - 1 %}
+        <a href="{{ 'api_question'|url_protected((u,a,n)) }}" class="w3-button w3-hover-indigo">&laquo;</a>
+        <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Valider &nbsp; &#10095;</button>
+    </div>
+</form>
 {% endblock %}

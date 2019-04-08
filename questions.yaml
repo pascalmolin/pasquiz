@@ -59,13 +59,31 @@ choices:
 - { text: "un accroissement annuel de 7%" }
 tag: [bac,analyse]
 ---
-text: >
-    Quel est le nombre de chiffres décimaux de $2^{64}$ ?
+text: Avec des nombres représentés par le type float
 choices:
-- { text: "1+\\floor{64\\log(2)/\\log(10)}", correct: True }
-- { text: "\\ceil{64\\log(2)/\\log(10)}", correct: True }
-- { text: "le taux de fécondité depuis 2000" }
-- { text: "le nombre moyen d'habitants en 2001" }
-
-
-
+- { text: "pour additionner deux nombres, on les décale pour les écrire avec un même exposant, on additionne puis on renormalise.", correct: True }
+- { text: "pour multiplier deux flottants, on effectue une multiplication binaire sur chacun des champs" }
+- { text: "la somme de deux quantités exactement représentables par le type float est aussi exactement représentable par le type float" }
+- { text: "deux nombres ont une représentation identique à condition que leur différence soit inférieure à $2^{-23}$" }
+tag: [l1,machine,medium]
+---
+text: Avec des nombres représentés par le type float
+choices:
+- { "le champ d'exposant représente des exposants de $-126$ à $+127$, ou l'exposant des infini.", correct: True }
+- { "la mantisse commence toujours par un 1, sauf pour la représentation de 0" }
+- { "les nombres entiers sont caractérisés par une mantisse égale à 0" }
+- { "les nombres qui peuvent s'écrire sous la forme $k\times 2^{-10}$ avec $k$ un entier sont ceux pour lesquels les $13$ derniers chiffres de mantisse sont nuls" }
+- { "le champ d'exposant contient une représentation en complément à 2 de l'exposant réel sur 7 bits" }
+tag: [l1,machine,medium]
+---
+text: >
+    Un disque de 500Go est divisé en blocs mémoire de 32Mo.
+    Combien de bits faut-il pour donner l'adresse d'un de ces blocs ?
+choices:
+- { text: "14 bits", correct: True }
+- { text: "1 kbit" }
+- { text: "11 bits" }
+- { text: "16 bits" }
+- { text: "32 bits" }
+- { text: "64 bits" }
+tag: [l1,machine,easy]

@@ -79,3 +79,9 @@ tag: [stupid]
 - images,...
 - sql database
 
+# Troubleshooting
+
+### no qrcode under wsgi
+
+see https://github.com/unbit/uwsgi/issues/1126
+for python >= 3.6, configuration ``wsgi.ini`` needs option ``wsgi-disable-file-wrapper = true``

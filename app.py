@@ -14,11 +14,6 @@ if sys.version_info.major == 3:
     unicode = str
     xrange = range
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
-
 VERSION='0.1'
 
 class User(dict):
@@ -194,7 +189,7 @@ class QuizzApp(dict):
         user = self.get('user',uid)
         answers = self.get('assignment',aid)
         if not answers.confirmed:
-            return PageConfirm(info, user=user)
+            return PageConfirm(info, user=user, answers=answers)
         if answers.score == None:
             self.grade(info)
         results = {
@@ -228,6 +223,14 @@ from flask import Flask, request, render_template, abort, redirect, url_for, sen
 from itsdangerous import (URLSafeTimedSerializer, Serializer, BadSignature, SignatureExpired, NoneAlgorithm)
 quizz = QuizzApp()
 app = Flask('quizz')
+app.config['verbose'] = False
+app.config['SECRET_KEY'] = '<random>'
+app.config['allow_register'] = False
+app.config['number_questions'] = 5
+app.config['number_choices'] = 3
+app.config['token_method'] = 'default'
+app.config['expiration_time'] = 0
+app.config['lang'] = 'fr'
 METHOD='GET'
 
 def get_serializer(salt=''):
@@ -389,15 +392,25 @@ def api_submit(data=None):
     return render_page(data, 'api_score')
 
 import pyqrcode
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import BytesIO as StringIO
 
 @app.route('/images/svg',methods = [METHOD])
 @token_required
 def api_svg(data=None):
-    stream = StringIO()
-    code = pyqrcode.create(data)
-    code.svg(stream, scale=1)
-    stream.seek(0)
-    return send_file(stream, mimetype='image/svg+xml')
+    try:
+        stream = StringIO()
+        code = pyqrcode.create(data)
+        code.svg(stream, scale=1)
+        stream.seek(0)
+        #if sys.version_info.major == 3:
+        #    stream = io.BytesIO(stream.encode())
+        return send_file(stream, mimetype='image/svg+xml')
+    except e:
+        return e
+    return send_file(stream, mimetype='image/svg+xml', as_attachment=True)
 
 #####################################################################
 #

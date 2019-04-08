@@ -1,21 +1,26 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
-          <h2>Pasquizz</h2>
-   </div>
-   <div class="w3-container">
-       <p>
-       Pour commencer un test, utilisez le lien d'activation
-       que vous avez reçu.
-       </p>
-
-       {% if token_link %}
-       <p>
-       Vous pouvez aussi obtenir un lien sur
-       <a href="{{ 'api_token'|url_protected(1) }}">cette page</a>.
-       </p>
-       {% endif %}
-   </div>
-</section>
-{% endblock content %}
+{% extends "card.html" %}
+{% block top %}
+  <h2>Pasquiz</h2>
+{% endblock %}
+{% block middle %}
+<div class="w3-container">
+    <p>
+    {% if config.lang == 'fr' %}
+    Pour commencer un test, utilisez le lien d'activation
+    que vous avez reçu.
+    {% else %}
+    You need an activation link to start a quiz.
+    {% endif %}
+    </p>
+    {% if token_link %}
+    <p>
+    {% if config.lang == 'fr' %}
+     Vous pouvez aussi obtenir un lien sur
+    {% else %}
+     You can get one on
+    {% endif %}
+    <a href="{{ 'api_token'|url_protected(1) }}">cette page</a>.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

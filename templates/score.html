@@ -1,18 +1,29 @@
-{% extends "base.html" %}
+{% extends "card.html" %}
 {% from "macros.html" import qrcode_link %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
-          <h2>Résultats</h2>
-   </div>
+{% block top %}
+    {% if config.lang == 'fr' %}
+    <h2>Résultats</h2>
+    {% else %}
+    <h2>Results</h2>
+    {% endif %}
+{% endblock %}
+{% block middle %}
    <div class="w3-container">
        {% set s = 's' if this.answers.score > 1 else '' %}
+    {% if config.lang == 'fr' %}
        Vous avez {{ this.answers.score }} réponse{{s}} correcte{{s}} sur les
        {{ this.answers|length }} questions.
+    {% else %}
+       You have {{ this.answers.score }} correct answer{{s}} 
+       among {{ this.answers|length }} questions.
+    {% endif %}
    </div>
    <div class="w3-container">
-       <p> Lien permanent vers votre score. </p>
+    {% if config.lang == 'fr' %}
+       <p>Lien permanent vers votre score.</p>
+    {% else %}
+       <p>Permanent link to your score.</p>
+    {% endif %}
        {{ qrcode_link(this.results,'api_view') }}
    </div>
-</section>
 {% endblock %}

@@ -1,14 +1,12 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
-          <h2>Action invalide</h2>
-   </div>
+{% extends "card.html" %}
+{% block top %}
+   <h2>Action invalide</h2>
+{% endblock %}
+{% block middle %}
    <div class="w3-container">
        <p>
-       Vous n'avez pas ou plus les autorisations nécessaires
+       Vous n'avez pas les autorisations nécessaires
        pour effectuer cette action ou accéder à cette page.
        </p>
    </div>
-</section>
-{% endblock content %}
+{% endblock %}

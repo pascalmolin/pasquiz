@@ -1,17 +1,25 @@
-{% extends "base.html" %}
+{% extends "card.html" %}
 {% from "macros.html" import qrcode_link %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
+{% block top %}
+    {% if config.lang == 'fr' %}
+      <h2>Lien d'activation</h2>
+    {% else %}
       <h2>Registration link</h2>
-   </div>
+    {% endif %}
+{% endblock %}
+{% block middle %}
    <div class="w3-container">
        <p>
+    {% if config.lang == 'fr' %}
        Le lien suivant vous permet de participer à un test.
        Si vous n'effectuez pas le test tout de suite, sauvegardez
        ce lien dans votre navigateur, il ne vous en sera pas donné d'autre.
+    {% else %}
+       The link below gives acces to a quiz. If you do not do it
+       immediately, keep the link in your bookmarks, you will not
+       be given another one.
+    {% endif %}
        </p>
        {{ qrcode_link(auth,'api_activate') }}
    </div>
-</section>
 {% endblock %}

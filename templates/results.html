@@ -1,13 +1,22 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
+{% extends "card.html" %}
+{% block top %}
+    {% if config.lang == 'fr' %}
        <h2>Résultats de {{ this.name }}</h2>
-   </div>
+    {% else %}
+       <h2>Results of {{ this.name }}</h2>
+    {% endif %}
+{% endblock %}
+{% block middle %}
    <div class="w3-container">
-       {% set s = 's' if this.score > 1 else '' %}
+    {% set s = 's' if this.score > 1 else '' %}
+    <p>
+    {% if config.lang == 'fr' %}
        Vous avez obtenu {{ this.score }} réponse{{s}} correcte{{s}} sur les
        {{ this.questions }} questions.
+    {% else %}
+       You have {{ this.score }} correct answer{{s}} 
+       among {{ this.questions }} questions.
+    {% endif %}
+    </p>
    </div>
-</section>
 {% endblock %}

@@ -1,24 +1,35 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="w3-display-container"> 
-   <div class="w3-container w3-indigo">
-          <h2>Registration</h2>
-   </div>
-   <form class="w3-container" action="{{ url_for('api_register') }}" method="get">
-     <input type="hidden" name="token" value="{{ auth|token('api_register') }}">
-     <p>Bienvenue.
-     Veuillez entrer votre nom ci-dessous avant de commencer.
-     </p>
-     <p><input class="w3-input" type="text" name="name" required>
-     <label>Nom</label>
-     </p>
-     <p>
-     Une fois le test lancé, vous avez 10 minutes pour effectuer le questionnaire.
-     N'oubliez pas de le valider.
-     </p>
-     <p>
-     <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Commencer &nbsp; &#10095;</button>
-     </p>
-   </form>
-</section>
+{% extends "card.html" %}
+{% block top %}
+    {% if config.lang == 'fr' %}
+   <h2>Enregistrement</h2>
+   {% else %}
+   <h2>Registration</h2>
+   {% endif %}
+{% endblock %}
+{% block middle %}
+<form class="w3-container" action="{{ url_for('api_register') }}" method="get">
+  <input type="hidden" name="token" value="{{ auth|token('api_register') }}">
+  {% if config.lang == 'fr' %}
+  <p> Bienvenue. Veuillez entrer votre nom ci-dessous avant de commencer. </p>
+  <p><input class="w3-input" type="text" name="name" required> <label>Nom</label></p>
+  {% else %}
+  <p> Welcome. Please enter your name. </p>
+  <p><input class="w3-input" type="text" name="name" required> <label>Name</label> </p>
+  {% endif %}
+  {% if config.expiration_time %}
+  {% set timeout = config.expiration_time / 60 %}
+  <p>
+  {% if config.lang == 'fr' %}
+  Une fois le test lancé, vous avez {{ config.expiration_time / 60 }} minutes pour effectuer le questionnaire.
+  N'oubliez pas de le valider.
+  {% else %}
+  Once the test begun, you have {{ timeout }} minutes to complete it.
+  Do not forget to validate.
+  {% endif %}
+  </p>
+  {% endif %}
+  <p>
+  <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Commencer &nbsp; &#10095;</button>
+  </p>
+</form>
 {% endblock %}

@@ -42,11 +42,12 @@ choices:
 - { text: "Yes when you use two dice." }
 tag: [stupid]
 ---
-text: What is number $2$?
+text: Who is number $2$?
 choices:
 - { text: "The oddest prime", correct: True }
-- { text: "The perimeter of the unit vector" }
+- { text: "The perimeter of a vector" }
 - { text: "Raphaël Nadal" }
+- { text: "The little indian" }
 tag: [stupid]
 ---
 text: What is the sum of all positive integers?

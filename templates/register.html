@@ -29,7 +29,9 @@
   </p>
   {% endif %}
   <p>
-  <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Commencer &nbsp; &#10095;</button>
+  <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">
+      {% if config.lang == 'fr' %}Commencer{% else %}Start{% endif %} &nbsp; &#10095;
+  </button>
   </p>
 </form>
 {% endblock %}

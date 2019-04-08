@@ -17,7 +17,9 @@
     <div class="w3-bar">
         {% set u,a,n = this.info[0],this.info[1],this.answers|length - 1 %}
         <a href="{{ 'api_question'|url_protected((u,a,n)) }}" class="w3-button w3-hover-indigo">&laquo;</a>
-        <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">Valider &nbsp; &#10095;</button>
+        <button type="submit" class="w3-btn w3-padding w3-indigo" style="width:120px">
+            {% if config.lang == 'fr' %}Valider{% else %}Submit{% endif %} &nbsp; &#10095;
+            </button>
     </div>
 </form>
 {% endblock %}

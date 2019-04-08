@@ -32,7 +32,9 @@
         {% if this.number > 0 %}
         <a href="{{ 'api_question'|url_protected((u,a,this.number-1)) }}" class="w3-button w3-hover-indigo">&laquo;</a>
         {% endif %}
-        <button type="submit" {% if this.disabled %} disabled {% endif %} class="w3-btn w3-padding w3-indigo" style="width:120px">Suivant &nbsp; &#10095;</button>
+        <button type="submit" {% if this.disabled %} disabled {% endif %} class="w3-btn w3-padding w3-indigo" style="width:120px">
+            {% if config.lang == 'fr' %}Suivant{% else %}Next{% endif %} &nbsp; &#10095;
+        </button>
     </div>
     </p>
 </form>

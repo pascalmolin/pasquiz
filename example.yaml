@@ -58,3 +58,12 @@ choices:
 - { text: "the weight of black matter" }
 - { text: "0" }
 tag: [math]
+---
+image: colorblind.jpg
+choices:
+- { text: "73", correct: True }
+- { text: "18" }
+- { text: "25" }
+- { text: "33" }
+- { text: "78" }
+tag: [vision]

@@ -24,13 +24,13 @@ class User(dict):
         self['date'] = time.time()
 
 class Answers(list):
-    """ user, quizz id, score, list choices """
-    def __init__(self, uid, qid, quizz):
+    """ user, quiz id, score, list choices """
+    def __init__(self, uid, qid, quiz):
         self.score = None
         self.uid = uid
         self.qid = qid
         self.confirmed = False
-        for question, choices in quizz:
+        for question, choices in quiz:
             self.append(None)
     def set_choice(self, number, choice):
         self[number] = choice
@@ -47,6 +47,7 @@ class Question(list):
     def __init__(self, **kwargs):
         self.title = kwargs.get('title','')
         self.text =  kwargs.get('text','')
+        self.image =  kwargs.get('image',None)
         self.correct = None
         for i,c in enumerate(kwargs.get('choices',[])):
             c = Choice(**c)
@@ -60,7 +61,7 @@ class Question(list):
     def grade(self, cid):
         """ cid a choice index, is choice number cid correct ? """
         return self.correct == cid
-class Quizz(list):
+class Quiz(list):
     """
     list of (questions, [index of choices])
     """
@@ -78,14 +79,14 @@ class PageQuestion(PageData):
 class PageScore(PageData):
     template = 'score.html'
 
-class QuizzApp(dict):
+class QuizApp(dict):
 
     def __init__(self):
         self['auth'] = {}
         self['user'] = []
         self['assignment'] = []
         self['question'] = []
-        self['quizz'] = []
+        self['quiz'] = []
 
     def number_of(self,db):
         assert db in self
@@ -108,10 +109,12 @@ class QuizzApp(dict):
         self['auth'][auth] = uid
         return uid
 
-    def new_quizz(self,length=3,maxanswers=3):
-        """ generates a random quizz, return index qid """
-        quizz = Quizz()
+    def new_quiz(self,length=3,maxanswers=3):
+        """ generates a random quiz, return index qid """
+        quiz = Quiz()
         pool = self.number_of('question')
+        if pool  < length:
+            length = pool
         for iq in random.sample(xrange(pool), length):
             q = self.get('question',iq)
             # choose some choices, the first one is correct
@@ -119,14 +122,14 @@ class QuizzApp(dict):
             c = random.sample(xrange(1,len(q)), maxanswers - 1)
             c.append(0)
             random.shuffle(c)
-            quizz.append( (iq, c) )
+            quiz.append( (iq, c) )
 
-        return self.add('quizz',quizz)
+        return self.add('quiz',quiz)
 
     def new_assignment(self, uid, qid):
         """ return index aid of new assignment """
-        quizz = self.get('quizz',qid)
-        answers = Answers(uid, qid, quizz)
+        quiz = self.get('quiz',qid)
+        answers = Answers(uid, qid, quiz)
         return self.add('assignment',answers)
 
     def post_answer(self, info, choice):
@@ -157,12 +160,12 @@ class QuizzApp(dict):
         uid, aid, number = info
         #user = self.get('user',uid)
         answers = self.get('assignment',aid)
-        quizz = self.get('quizz',answers.qid)
+        quiz = self.get('quiz',answers.qid)
 
         if number >= len(answers):
             return self.get_score_page((uid,aid))
 
-        qid, choices_index = quizz[number]
+        qid, choices_index = quiz[number]
         question = self.get('question',qid)
         choices = [ question[c] for c in choices_index ]
         return PageQuestion(info,
@@ -176,9 +179,9 @@ class QuizzApp(dict):
         uid, aid = info
         user = self.get('user',uid)
         answers = self.get('assignment',aid)
-        quizz = self.get('quizz',answers.qid)
+        quiz = self.get('quiz',answers.qid)
         score = 0
-        for choice, (qid, cid) in zip(answers,quizz):
+        for choice, (qid, cid) in zip(answers,quiz):
             if app.config['verbose']:
                 app.logger.info("choice %i in question %s"%(choice,(qid,cid)))
             question = self.get('question',qid)
@@ -219,11 +222,11 @@ class QuizzApp(dict):
 #
 #####################################################################
 
-from flask import Flask, request, render_template, abort, redirect, url_for, send_file
+from flask import Flask, request, render_template, abort, redirect, url_for, send_file, send_from_directory
 
 from itsdangerous import (URLSafeTimedSerializer, Serializer, BadSignature, SignatureExpired, NoneAlgorithm)
-quizz = QuizzApp()
-app = Flask('quizz')
+quiz = QuizApp()
+app = Flask('quiz')
 app.config['verbose'] = False
 app.config['SECRET_KEY'] = '<random>'
 app.config['allow_register'] = False
@@ -243,7 +246,7 @@ def get_serializer(salt=''):
         return URLSafeTimedSerializer(app.config['SECRET_KEY'],salt=salt)
 
 @app.template_filter('token')
-def tokenize(data, salt='quizz',expiration=600):
+def tokenize(data, salt='quiz',expiration=600):
     """
     creates a token for the given data
     """
@@ -295,11 +298,11 @@ def token_required(f):
             return render_template("illegal.html"), 401
         try:
             return f(*args,data=data,**kwargs)
-        except AssertionError:
-            app.logger.info("[INVALID] not in the database")
+        except AssertionError as e:
+            app.logger.info("[INVALID] illegal database access %s",e)
             return render_template("illegal.html"), 401
-        except TypeError:
-            app.logger.info("[TYPE ERROR] wrong entry")
+        except TypeError as e:
+            app.logger.info("[TYPE ERROR] wrong entry %s"%e)
             return render_template("illegal.html"), 401
     return decorated
 
@@ -334,7 +337,7 @@ def api_token(data=None):
     In the future this page must be protected
     and tokens generated by authorized people only.
     """
-    auth = quizz.number_of('auth')
+    auth = quiz.number_of('auth')
     return render_template('token.html',auth=auth)
 
 @app.route('/activate', methods = [METHOD])
@@ -348,26 +351,26 @@ def api_register(data=None):
     """ token data (registration key) """
     auth = str(data)
     name = unicode(request.args.get('name'))
-    uid = quizz.new_user(name, auth)
-    qid = quizz.new_quizz(app.config['number_questions'],
+    uid = quiz.new_user(name, auth)
+    qid = quiz.new_quiz(app.config['number_questions'],
                           app.config['number_choices'])
-    aid = quizz.new_assignment(uid, qid)
+    aid = quiz.new_assignment(uid, qid)
     if app.config['verbose']:
-        app.logger.info("created user %i,quizz %i,assignment %i"%(uid,qid,aid))
+        app.logger.info("created user %i,quiz %i,assignment %i"%(uid,qid,aid))
     return render_page(PageData((uid,aid,0)), 'api_question')
 
 @app.route('/question', methods = [METHOD])
 @token_required
 def api_question(data=None):
     """ token data (uid, aid, number) """
-    page = quizz.get_question_page(data)
+    page = quiz.get_question_page(data)
     return render_page(page)
 
 @app.route('/score', methods = [METHOD])
 @token_required
 def api_score(data=None):
     """ token data (uid, aid, number) """
-    page = quizz.get_score_page(data)
+    page = quiz.get_score_page(data)
     return render_page(page)
 
 @app.route('/results', methods = [METHOD])
@@ -381,7 +384,7 @@ def api_view(data=None):
 def api_answer(data=None):
     """ token data (uid, aid, number) """
     choice = int(request.args.get('choice'))
-    data = quizz.post_answer(data, choice)
+    data = quiz.post_answer(data, choice)
     return render_page(data, 'api_question')
 
 @app.route('/api/submit', methods = [METHOD])
@@ -389,7 +392,7 @@ def api_answer(data=None):
 def api_submit(data=None):
     """ token data (uid, aid) """
     app.logger.info('received token %s' % data)
-    data = quizz.post_confirmation(data)
+    data = quiz.post_confirmation(data)
     return render_page(data, 'api_score')
 
 import pyqrcode
@@ -398,7 +401,7 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
-@app.route('/images/svg',methods = [METHOD])
+@app.route('/api/svg',methods = [METHOD])
 @token_required
 def api_svg(data=None):
     try:
@@ -411,7 +414,11 @@ def api_svg(data=None):
         return send_file(stream, mimetype='image/svg+xml')
     except e:
         return e
-    return send_file(stream, mimetype='image/svg+xml', as_attachment=True)
+
+@app.route('/images/<path:filename>')
+def api_images(filename):
+    return send_from_directory('images',filename)
+
 
 #####################################################################
 #
@@ -429,7 +436,7 @@ def cli():
 @click.option('--debug', default=False, is_flag=True, help='turn on Flask debug mode')
 @click.option('--verbose', default=False, is_flag=True, help='log requests')
 @click.option('--allow-register', default=False, is_flag=True, help='provide registration link at index page')
-@click.option('--number_questions', default=5, help='number of questions per quizz')
+@click.option('--number_questions', default=5, help='number of questions per quiz')
 @click.option('--number_choices', default=3, help='number of choices per question')
 @click.option('--secret_key', default='lilalilalou', help='secret key')
 @click.option('--token_method', type=click.Choice(['none', 'default']), default='default', help='token method')
@@ -455,5 +462,5 @@ def build(yaml):
     pass
 
 if __name__ == '__main__':
-    quizz.load_questions_yaml('example.yaml')
+    quiz.load_questions_yaml('example.yaml')
     cli()

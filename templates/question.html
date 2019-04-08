@@ -5,19 +5,22 @@
 {% block middle %}
 <form class="w3-container" action="{{ url_for('api_answer') }}" method="get">
     <input type="hidden" name="token" value="{{ this.info|token('api_answer') }}">
-    <p>
-    {{ this.question.text }}
-    </p>
+    <p> {{ this.question.text }} </p>
+    {% if this.question.image %}
+    <img src="{{ url_for('api_images',filename=this.question.image) }}"
+         style="display: block; max-width: 100%; margin: auto;">
+    {% endif %}
     <ul class="w3-ul w3-border">
         {% for choice in this.choices %}
-        <li>
-            <input {#class="w3-radio"#}
-        type="radio" name="choice"
-                     value="{{ loop.index0 }}"
+        <li class="radio">
+            {% set id = loop.index0 %}
+            <input type="radio" name="choice"
+                     id="{{ id }}"
+                     value="{{ id }}"
                      {% if loop.index0 == this.selected %} checked {% endif %}
                      {% if this.disabled %} disabled {% endif %}
                      required>
-            <label>{{ choice.text }}</label>
+            <label for="{{ id }}">{{ choice.text }}</label>
         </li>
         {% endfor %}
     </ul>
@@ -60,28 +63,29 @@
 {% endblock %}
 {% block style %}
 <style>
-input.faCheck {
+.radio input {
     visibility: hidden;
+    width: 0;
+    height: 0;
+    cursor: select;
 }
-input.faCheck:checked:after, input.faCheck:after {
-    visibility: visible;
-    font-family: FontAwesome;
-    font-size:25px;height: 17px; width: 17px;
+.radio input + label:before {
+    visibility: visible; 
+    font-size: 20px;
+    /*height: 20px !important;
+    width: 20px !important;*/
     position: relative;
-    top: -3px;
-    left: 0px;
-    background-color:#FFF;
-    display: inline-block;
+    top: 2px;
+    /*padding-right: 12px;*/
+    margin-right: 12px;
 }
-
-input.faCheck:checked:after {
-      content: '\f058';
+.radio input + label:before {
+      content: '\25CC';
+      color: #F91;
 }
-
-input.faCheck:after {
-      content: '\f10c';
+.radio input:checked + label:before {
+      content: '\25C9';
+      color: #7B1;
 }
 </style>
 {% endblock style %}
-
-

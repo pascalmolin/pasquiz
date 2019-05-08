@@ -324,7 +324,11 @@ def render_page(data,route=None):
 
 @app.route('/')
 def index():
-    return render_template('index.html',token_link=app.config['allow_register'])
+    if app.config['token_method'] == 'none':
+        auth = quiz.number_of('auth')
+        return render_template('register.html', auth=auth)
+    else:
+        return render_template('index.html',token_link=app.config['allow_register'])
 
 @app.route('/token', methods = [METHOD])
 @token_required
@@ -440,6 +444,7 @@ def cli():
 @click.option('--number_choices', default=3, help='number of choices per question')
 @click.option('--secret_key', default='lilalilalou', help='secret key')
 @click.option('--token_method', type=click.Choice(['none', 'default']), default='default', help='token method')
+@click.option('--lang', type=click.Choice(['en', 'fr']), default='en', help='language')
 @click.option('--port', default=8000, help='http port')
 def server(debug,
         verbose,
@@ -448,6 +453,7 @@ def server(debug,
         number_choices,
         secret_key,
         token_method,
+        lang,
         port):
     app.config['verbose'] = verbose
     app.config['SECRET_KEY'] = secret_key
@@ -456,6 +462,7 @@ def server(debug,
     app.config['number_choices'] = number_choices
     app.config['token_method'] = token_method
     app.config['port'] = port
+    app.config['lang'] = lang
     app.run(debug=debug,port=port)
 
 @cli.command()

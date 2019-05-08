@@ -238,7 +238,7 @@ app.config['lang'] = 'fr'
 METHOD='GET'
 
 def get_serializer(salt=''):
-    if app.config['token_method'] == None:
+    if app.config['token_method'] == 'none':
         return Serializer(app.config['SECRET_KEY'],salt=salt,signer=None)
     elif app.config['token_method'] == 'default':
         return URLSafeTimedSerializer(app.config['SECRET_KEY'],salt=salt)
@@ -440,20 +440,23 @@ def cli():
 @click.option('--number_choices', default=3, help='number of choices per question')
 @click.option('--secret_key', default='lilalilalou', help='secret key')
 @click.option('--token_method', type=click.Choice(['none', 'default']), default='default', help='token method')
+@click.option('--port', default=8000, help='http port')
 def server(debug,
         verbose,
         allow_register,
         number_questions,
         number_choices,
         secret_key,
-        token_method):
+        token_method,
+        port):
     app.config['verbose'] = verbose
     app.config['SECRET_KEY'] = secret_key
     app.config['allow_register'] = allow_register
     app.config['number_questions'] = number_questions
     app.config['number_choices'] = number_choices
     app.config['token_method'] = token_method
-    app.run(debug=debug)
+    app.config['port'] = port
+    app.run(debug=debug,port=port)
 
 @cli.command()
 @click.option('--yaml',default='questions.yaml',

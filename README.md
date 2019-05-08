@@ -31,6 +31,8 @@ Options:
 --number_choices INTEGER       number of choices per question
 --secret_key TEXT              secret key
 --token_method [none|default]  token method
+--lang [en|fr]                 language
+--port INTEGER                 http port
 --help                         Show this message and exit.
 ```
 
@@ -84,6 +86,25 @@ tag: [stupid]
 - sql database
 
 # Troubleshooting
+
+### install on pythonanywhere
+
+Install the required packages (``pip install``)
+
+Edit ``app.py`` and hard-code your settings, and load the question file
+manually. For example:
+```
+quiz = QuizApp()
+quiz.load_questions_yaml('example.yaml')
+
+app = Flask('quiz')
+app.config['lang'] = 'en'
+app.config['verbose'] = True
+app.config['SECRET_KEY'] = '<random>'
+app.config['token_method'] = 'none'
+app.config['number_questions'] = 8
+app.config['number_choices'] = 3
+```
 
 ### no qrcode under wsgi
 
